@@ -169,3 +169,5 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node,go
 
 indexer/enron_mail_20110402/**
+
+profiles/

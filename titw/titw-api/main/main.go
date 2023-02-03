@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -28,9 +29,26 @@ func main() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	r.Get("/", func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte("Hello World!"))
-	})
+	/* r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		mime.AddExtensionType(".js", "application/javascript")
+		mime.AddExtensionType(".html", "text/html")
+		mime.AddExtensionType(".css", "text/css")
+		fileServer := http.FileServer(http.Dir("../../titw-fe/emails-app/dist/"))
+
+		http.StripPrefix("/", fileServer)
+
+		fileServer.ServeHTTP(w, r)
+	}) */
+
+	/* mime.AddExtensionType(".js", "application/javascript")
+	mime.AddExtensionType(".html", "text/html")
+	mime.AddExtensionType(".css", "text/css")
+
+	fileserver := http.FileServer(http.Dir("../../titw-fe/emails-app/dist/"))
+
+	//http.Handle("/", http.StripPrefix("/", fileserver))
+
+	r.Handle("/static/", http.StripPrefix("/static", fileserver)) */
 
 	r.Route("/emails", func(r chi.Router) {
 
