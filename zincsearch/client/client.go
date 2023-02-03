@@ -15,21 +15,18 @@ type ZinSearchClient struct {
 	basicAuth   string
 }
 
-// set the ZincSearch Client
 // following the next documentation https://docs.zincsearch.com/api/search/search/#golang-example
 func NewZinSearchClient(url string, basicAuth string) ZinSearchClient {
 	zinSearchClient := ZinSearchClient{}
 
 	zinSearchClient.url = url
 	zinSearchClient.basicAuth = basicAuth
-	zinSearchClient.contentType = "application/json" //especifica el formato de datos en el body
-	zinSearchClient.userAgent = /*Header por defecto para peticiones*/ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+	zinSearchClient.contentType = "application/json"
+	zinSearchClient.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
 
 	return zinSearchClient
 }
 
-// send bulk to zincSearch
-// referencia hacia el struct (une a un nuevo struct con estos metodos)
 func (client *ZinSearchClient) CreateDocumentsBulk(requestPayload []byte) ([]byte, error) {
 	finalUrl := client.url + "/api/_bulkv2"
 
@@ -87,7 +84,6 @@ func (client *ZinSearchClient) Search(searchQuery string, index string) ([]byte,
 
 	defer searchResponse.Body.Close()
 
-	// reading the response
 	searchResult, resultErr := io.ReadAll(searchResponse.Body)
 
 	if resultErr != nil {

@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	// set zincsearch localhost url and password
 	zsUrl    = "http://localhost:4080"
 	zsSecret = "Complexpass#123"
 )

@@ -15,28 +15,23 @@ type EmailJsonData struct {
 	Content string `json:"content"`
 }
 
-// create the data for json
 func CreateEmailJsonData(emailFile io.Reader) (EmailJsonData, error) {
-	// struct EmailJsonData
 	email := EmailJsonData{}
 	emailContent := ""
+	finalLineSpace := ""
 	scanner := bufio.NewScanner(emailFile)
 
-	// scanner emails
 	for scanner.Scan() {
 		textLine := scanner.Text()
 
 		if strings.Contains(textLine, "Subject:") {
-			// getting subject email
 			subjectLine := strings.Split(textLine, "Subject:")
 
-			// if subject isnt empty
 			if len(subjectLine) > 0 {
 				email.Subject = subjectLine[1]
 			}
 		}
 
-		// get email "from"
 		if strings.Contains(textLine, "From:") {
 			senderLine := strings.Split(textLine, "From:")
 
@@ -45,7 +40,6 @@ func CreateEmailJsonData(emailFile io.Reader) (EmailJsonData, error) {
 			}
 		}
 
-		// get email "To"
 		if strings.Contains(textLine, "To:") {
 			recipientLine := strings.Split(textLine, "To:")
 
@@ -54,16 +48,14 @@ func CreateEmailJsonData(emailFile io.Reader) (EmailJsonData, error) {
 			}
 		}
 
-		// get email content
 		if strings.Contains(textLine, "X-FileName:") {
 			for scanner.Scan() {
-				emailContent += scanner.Text() + " "
+				emailContent += scanner.Text() + finalLineSpace
 			}
 		}
 
 	}
 
-	// set all the email content
 	email.Content = emailContent
 
 	return email, nil
@@ -71,20 +63,12 @@ func CreateEmailJsonData(emailFile io.Reader) (EmailJsonData, error) {
 
 func ParseEmailFileToJson(emailFilePath string) EmailJsonData {
 
-	// open the file
 	emailFile, emailFileErr := os.Open(emailFilePath)
 
 	if emailFileErr != nil {
 		log.Printf("Error reading file %s: %s", emailFilePath, emailFileErr)
 	}
 
-	/*
-	*	return the email parsed with:
-	*	- Subject
-	*	- To
-	*	- From
-	*	- Content
-	 */
 	emailJsonData, _ := CreateEmailJsonData(emailFile)
 
 	return emailJsonData

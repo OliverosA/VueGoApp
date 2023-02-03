@@ -7,10 +7,8 @@ import (
 	"github.com/OliverosA/zincsearch/client"
 )
 
-// create documents bulk
 func DocumentsBulkCreation(docs []files.EmailJsonData) []byte {
 
-	// set zincsearch localhost url and password
 	zsUrl := "http://localhost:4080"
 	zsSecret := "Complexpass#123"
 

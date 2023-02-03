@@ -12,7 +12,6 @@ import (
 
 // Untar(decompress) the file
 func Untar(source string, inboxFlag bool) error {
-	// open the file
 	println("Triying to open file: ", source)
 	tarFile, tarFileOpenErr := os.Open(source)
 
@@ -20,7 +19,6 @@ func Untar(source string, inboxFlag bool) error {
 		return tarFileOpenErr
 	}
 
-	// if success start decompressing the file with gz
 	println("Triying to decompress with gz...")
 	decompressedFile, decompressionErr := gzip.NewReader(tarFile)
 
@@ -28,10 +26,8 @@ func Untar(source string, inboxFlag bool) error {
 		return decompressionErr
 	}
 
-	// when all ends close the file
 	defer decompressedFile.Close()
 
-	// start decompressing with tar
 	println("Triying to decompress with tar...")
 	tarBall := tar.NewReader(decompressedFile)
 
@@ -39,25 +35,23 @@ func Untar(source string, inboxFlag bool) error {
 	for {
 		header, nextHeaderErr := tarBall.Next()
 
-		// FOSUM-D DOESNT HAVE INBOX
 		switch {
-		case nextHeaderErr == io.EOF: // IF END OF FILE
+		case nextHeaderErr == io.EOF: 
 			return nil
-		case nextHeaderErr != nil: // IF ERROR != NULL
+		case nextHeaderErr != nil: 
 			return nextHeaderErr
-		case header == nil: // iF THE HEADER IS NULL, SKIP IT
+		case header == nil: 
 			continue
 
 		}
 
-		// if inbox flag is true only inbox directory would be untared
 		if inboxFlag {
-			// cheking for inbox email files only
+			
 			inboxDirectory := false
 			headerCheck := strings.Split(header.Name, "/")
 			if len(headerCheck) >= 4 {
 				for _, name := range headerCheck {
-					if name == "inbox" { // inside inbox directory
+					if name == "inbox" {
 						inboxDirectory = true
 					}
 				}
@@ -68,14 +62,11 @@ func Untar(source string, inboxFlag bool) error {
 			}
 		}
 
-		// making the target location with header name from compresed file
-		// example: enron_mail_20110402\maildir\haedicke-m\inbox\339.
 		target := filepath.Join(".", header.Name)
 
-		// check the type file
 		switch header.Typeflag {
-		case tar.TypeDir: // type file = directory
-			if _, err := os.Stat(target); err != nil { // if theres no error path file
+		case tar.TypeDir: 
+			if _, err := os.Stat(target); err != nil { 
 
 				/*os.MkdirAll(path, FileMode = 0750 (permission))
 				*
@@ -94,8 +85,7 @@ func Untar(source string, inboxFlag bool) error {
 				}
 			}
 
-		case tar.TypeReg: // if es a file create it
-			// file opened with create and read/write flags and permissioo 0750
+		case tar.TypeReg: 
 			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(0750))
 			if err != nil {
 				return err
@@ -104,12 +94,10 @@ func Untar(source string, inboxFlag bool) error {
 			// using this causes the files to be closed until they are all complete
 			//defer f.Close()
 
-			// copying content from the file
 			if _, err := io.Copy(f, tarBall); err != nil {
 				return err
 			}
 
-			// manually closing the file
 			f.Close()
 		}
 	}

@@ -17,8 +17,6 @@ func BuildJsonBulkCreationPayload(docs []files.EmailJsonData) []byte {
 		Records: docs,
 	}
 
-	// create the slice into a json
-	// pretty json format with json.MarshalIndent
 	payloadStringified, _ := json.MarshalIndent(requestPayload, "", "  ")
 
 	return payloadStringified
