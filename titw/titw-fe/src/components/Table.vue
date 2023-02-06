@@ -1,7 +1,7 @@
 <template>
   <div class="justify-start mt-10 w-1/2 mx-3">
     <div
-      v-if="!emails"
+      v-if="!emails || emails.length == 0"
       class="bg-blue-100 rounded-lg py-5 px-6 mb-3 text-base text-blue-700 inline-flex items-center w-full"
       role="alert"
     >
