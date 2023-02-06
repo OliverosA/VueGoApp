@@ -4,11 +4,12 @@ import (
 	"archive/tar"   // decompress tar package
 	"compress/gzip" // decompress gzip package
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 )
+
+const chmod = 0750 //change mod permission
 
 // Untar(decompress) the file
 func Untar(source string, inboxFlag bool) error {
@@ -36,17 +37,17 @@ func Untar(source string, inboxFlag bool) error {
 		header, nextHeaderErr := tarBall.Next()
 
 		switch {
-		case nextHeaderErr == io.EOF: 
+		case nextHeaderErr == io.EOF:
 			return nil
-		case nextHeaderErr != nil: 
+		case nextHeaderErr != nil:
 			return nextHeaderErr
-		case header == nil: 
+		case header == nil:
 			continue
 
 		}
 
 		if inboxFlag {
-			
+
 			inboxDirectory := false
 			headerCheck := strings.Split(header.Name, "/")
 			if len(headerCheck) >= 4 {
@@ -65,8 +66,8 @@ func Untar(source string, inboxFlag bool) error {
 		target := filepath.Join(".", header.Name)
 
 		switch header.Typeflag {
-		case tar.TypeDir: 
-			if _, err := os.Stat(target); err != nil { 
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
 
 				/*os.MkdirAll(path, FileMode = 0750 (permission))
 				*
@@ -79,14 +80,13 @@ func Untar(source string, inboxFlag bool) error {
 				*	https://pkg.go.dev/os#MkdirAll
 				 */
 
-				if err := os.MkdirAll(target, 0750); err != nil {
-					log.Println("error aca")
+				if err := os.MkdirAll(target, chmod); err != nil {
 					return err
 				}
 			}
 
-		case tar.TypeReg: 
-			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(0750))
+		case tar.TypeReg:
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(chmod))
 			if err != nil {
 				return err
 			}
