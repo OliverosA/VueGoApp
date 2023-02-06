@@ -7,9 +7,11 @@ const useEmails = () => {
   const getEmails = async () => {
     const { data } = await axios.get(`http://localhost:3000/emails`);
 
-    emails.value = data.hits.hits?.map((email: { _id: any; _source: any }) => {
-      return { id: email._id, source: email._source };
-    });
+    emails.value = data.hits.hits?.map(
+      (email: { _id: string; _source: object }) => {
+        return { id: email._id, source: email._source };
+      }
+    );
   };
 
   const searchTerm = async (term: string) => {
@@ -20,9 +22,11 @@ const useEmails = () => {
       `http://localhost:3000/emails/term`,
       body
     );
-    emails.value = data.hits.hits?.map((email: { _id: any; _source: any }) => {
-      return { id: email._id, source: email._source };
-    });
+    emails.value = data.hits.hits?.map(
+      (email: { _id: string; _source: object }) => {
+        return { id: email._id, source: email._source };
+      }
+    );
   };
 
   getEmails();
