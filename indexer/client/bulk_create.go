@@ -7,10 +7,12 @@ import (
 	"github.com/OliverosA/zincsearch/client"
 )
 
-func DocumentsBulkCreation(docs []files.EmailJsonData) []byte {
+const (
+	zsUrl    = "http://localhost:4080"
+	zsSecret = "Complexpass#123"
+)
 
-	zsUrl := "http://localhost:4080"
-	zsSecret := "Complexpass#123"
+func DocumentsBulkCreation(docs []files.EmailJsonData) []byte {
 
 	zsClient := client.NewZinSearchClient(zsUrl, zsSecret)
 	requestPayload := BuildJsonBulkCreationPayload(docs)
